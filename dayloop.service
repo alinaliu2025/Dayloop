@@ -1,0 +1,19 @@
+# Always-on via systemd (VPS or Raspberry Pi). Put real secrets in
+# /etc/dayloop.env (chmod 600) — never commit them. Then:
+#   sudo cp dayloop.service /etc/systemd/system/
+#   sudo systemctl enable --now dayloop
+#   journalctl -u dayloop -f      # watch logs
+[Unit]
+Description=dayloop telegram bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/home/alina/dayloop
+EnvironmentFile=/etc/dayloop.env
+ExecStart=/usr/bin/python3 bot.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

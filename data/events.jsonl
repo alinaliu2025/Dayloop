@@ -1,0 +1,10 @@
+{"ts": "2026-07-07T14:35:28", "kind": "checkin", "goal": null, "payload": {"ok": true}}
+{"ts": "2026-07-07T14:35:48", "kind": "checkin", "goal": null, "payload": {"ok": true}}
+{"ts": "2026-07-07T15:41:04", "kind": "checkin", "goal": null, "payload": {"ok": true}}
+{"ts": "2026-07-07T15:41:15", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true}}
+{"ts": "2026-07-07T15:41:17", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true}}
+{"ts": "2026-07-07T15:44:12", "kind": "checkin", "goal": null, "payload": {"ok": true}}
+{"ts": "2026-07-07T15:45:28", "kind": "checkin", "goal": null, "payload": {"ok": true}}
+{"ts": "2026-07-07T15:45:29", "kind": "bodycomp", "goal": "bodycomp", "payload": {"ok": true}}
+{"ts": "2026-07-07T15:45:31", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true}}
+{"ts": "2026-07-07T15:45:32", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true}}

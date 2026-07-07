@@ -1,0 +1,162 @@
+# =====================================================================
+# DAYLOOP CONFIG  —  the STATIC SPINE only.
+#
+# Placement rule for everything in this file:
+#   "Could I have written this truthfully on day one, and will it rarely
+#    change?"  yes -> it belongs here (spine).
+#   no  -> it is DISCOVERED by doing and lives in data/plans.json
+#          (the living plan), written by the loop, not typed here.
+#
+# So goals here carry only their identity (id, type, why, and the few
+# facts knowable up front). Their week-to-week PLAN — the bottleneck, the
+# decomposition, the practice target — is generated into data/plans.json.
+# =====================================================================
+
+timezone: "America/New_York"
+wake: "09:00"
+sleep_target: "00:00"
+
+
+# ---- GOALS: the spine. `type` decides what the loop does with it. ---
+# type: habit        fully specifiable up front -> config is the right home
+#       skill        you don't know your gaps -> loop finds the bottleneck
+#       achievement  finite deliverable -> loop decomposes lazily, on failure
+#       influence    outcome you don't directly control -> loop translates it
+#                    into controllable process goals
+#
+# Only spine fields live here. The living plan (data/plans.json) holds the
+# generated parts noted in each comment.
+goals:
+
+  - id: art
+    type: skill
+    why: "make manga someday"
+    domain: "drawing — anatomy from imagination"
+    # An INHERITED skill tree: locate yourself on it, don't invent it.
+    skill_tree: [construction, gesture, anatomy, perspective, value, color, composition, edges]
+    # living plan -> current bottleneck, error/divergence log, this week's
+    # single deliberate-practice target.
+
+  - id: reu_probe
+    type: achievement
+    why: "REU deliverable — the thing I'm actually here to ship"
+    end_state: "deception-probe transfer results scaled to 7B, written up"
+    due: "2026-08-15"
+    # living plan -> decomposition into leaf tasks, current leaf, and a
+    # per-leaf escalation trigger (only fires when a leaf gets stuck).
+
+  - id: interview_prep
+    type: skill
+    why: "be internship-ready next summer"
+    domain: "coding interviews — LeetCode patterns"
+    skill_tree: [arrays, hashing, two_pointers, sliding_window, stacks, trees, graphs, dp]
+    # living plan -> current weak pattern, error log (what you couldn't solve
+    # unaided), this week's target difficulty.
+
+  - id: bodycomp
+    type: influence
+    why: "feel strong and healthy by end of summer"
+    # An OUTCOME you can't act on directly. On /plan the loop translates it
+    # into controllable process levers (did the workout happen, did movement
+    # happen) and NEVER prescribes diet or calories.
+
+  - id: draw_daily
+    type: habit
+    why: "keep the drawing hand warm"
+    cue: "after morning coffee"
+    schedule: "daily 20m"
+    # Fully specified. Distinct from `art`: this is the warm-up rep; `art`
+    # is the deliberate practice aimed at the current bottleneck.
+
+  - id: reading
+    type: habit
+    why: "financial literacy + staying curious"
+    schedule: "3x/week 30m"
+
+
+# ---- ROUTINE TEMPLATES: the default days (also spine) ----------------
+# kinds: fixed | focus | transition | flex | light
+#   checkin: true  -> a tap-to-log nudge fires at `start`
+#   prime:   true  -> a best cognitive window (schedule hard work here)
+#   goal:    <id>  -> ties this block (and its check-in tap) to a goal, so
+#                     the tap lands in that goal's living-plan log.
+routines:
+  templates:
+
+    volleyball_day:
+      - {start: "09:00", end: "09:30", kind: transition, name: "Wake + breakfast", checkin: true}
+      - {start: "09:30", end: "09:45", kind: transition, name: "Bike to gym"}
+      - {start: "09:45", end: "10:45", kind: fixed,      name: "Gym (1h cap)", goal: bodycomp, checkin: true}
+      - {start: "10:45", end: "11:00", kind: transition, name: "Bike to library"}
+      - {start: "11:00", end: "13:00", kind: focus,      name: "Deep work block A", goal: reu_probe, prime: true, checkin: true}
+      - {start: "13:00", end: "13:30", kind: transition, name: "Lunch"}
+      - {start: "13:30", end: "16:45", kind: focus,      name: "Deep work block B", goal: reu_probe, prime: true, checkin: true}
+      - {start: "16:45", end: "17:00", kind: transition, name: "Head to volleyball"}
+      - {start: "17:00", end: "21:00", kind: fixed,      name: "Volleyball", goal: bodycomp, checkin: true}
+      - {start: "21:00", end: "21:45", kind: transition, name: "Dinner + shower"}
+      - {start: "21:45", end: "23:00", kind: light,      name: "Art (deliberate practice)", goal: art, checkin: true}
+      - {start: "23:00", end: "23:45", kind: flex,       name: "Free time"}
+      - {start: "23:45", end: "00:00", kind: transition, name: "Wind down, phone away"}
+
+    rain_day:
+      - {start: "09:00", end: "09:30", kind: transition, name: "Wake + breakfast", checkin: true}
+      - {start: "09:30", end: "09:45", kind: transition, name: "Bike to gym"}
+      - {start: "09:45", end: "10:45", kind: fixed,      name: "Gym (1h cap)", goal: bodycomp, checkin: true}
+      - {start: "10:45", end: "11:00", kind: transition, name: "Bike to library"}
+      - {start: "11:00", end: "13:00", kind: focus,      name: "Deep work block A", goal: reu_probe, prime: true, checkin: true}
+      - {start: "13:00", end: "13:30", kind: transition, name: "Lunch"}
+      - {start: "13:30", end: "16:45", kind: focus,      name: "Deep work block B", goal: reu_probe, prime: true, checkin: true}
+      - {start: "16:45", end: "17:00", kind: transition, name: "Break + snack"}
+      - {start: "17:00", end: "18:30", kind: focus,      name: "LeetCode / interview prep", goal: interview_prep, checkin: true}
+      - {start: "18:30", end: "19:00", kind: transition, name: "Walk (movement)", goal: bodycomp}
+      - {start: "19:00", end: "20:30", kind: light,      name: "Art (deliberate practice)", goal: art, checkin: true}
+      - {start: "20:30", end: "21:15", kind: transition, name: "Dinner + shower"}
+      - {start: "21:15", end: "21:45", kind: light,      name: "Reading", goal: reading}
+      - {start: "21:45", end: "23:45", kind: flex,       name: "Free time"}
+      - {start: "23:45", end: "00:00", kind: transition, name: "Wind down, phone away"}
+
+    weekend:
+      - {start: "09:30", end: "10:00", kind: transition, name: "Wake + breakfast", checkin: true}
+      - {start: "10:00", end: "10:15", kind: transition, name: "Bike to gym"}
+      - {start: "10:15", end: "11:15", kind: fixed,      name: "Gym (1h cap)", goal: bodycomp}
+      - {start: "11:15", end: "11:30", kind: transition, name: "Bike back"}
+      - {start: "11:30", end: "13:00", kind: focus,      name: "Deep work (lighter)", goal: reu_probe, prime: true, checkin: true}
+      - {start: "13:00", end: "13:30", kind: transition, name: "Lunch"}
+      - {start: "13:30", end: "14:30", kind: focus,      name: "LeetCode / interview prep", goal: interview_prep, checkin: true}
+      - {start: "14:30", end: "16:30", kind: light,      name: "Art (deliberate practice)", goal: art, checkin: true}
+      - {start: "16:30", end: "18:00", kind: flex,       name: "Free time / social"}
+      - {start: "18:00", end: "18:45", kind: light,      name: "Reading", goal: reading}
+      - {start: "18:45", end: "19:30", kind: transition, name: "Dinner"}
+      - {start: "19:30", end: "23:30", kind: flex,       name: "Free evening"}
+      - {start: "23:30", end: "00:00", kind: transition, name: "Wind down, phone away"}
+
+  # Which template runs which day. The bot swaps volleyball_day -> rain_day
+  # when volleyball is cancelled (weather or an override).
+  week:
+    monday:    volleyball_day
+    tuesday:   volleyball_day
+    wednesday: volleyball_day
+    thursday:  volleyball_day
+    friday:    volleyball_day
+    saturday:  weekend
+    sunday:    weekend
+
+
+# ---- JOURNALING: the reflection that feeds the living plan -----------
+# Questions are GENERATED each week from each goal's current state (not a
+# fixed form). `depth` scales how many questions a goal gets by how blind
+# the model is to that goal: a skill the model can't see gets more; an
+# achievement it can decompose gets fewer.
+journaling:
+  weekly: true
+  depth:
+    skill: 3
+    achievement: 1
+    influence: 2
+    habit: 0
+
+
+# ---- LLM config -----------------------------------------------------
+# OpenAI Chat Completions. Auth = OPENAI_API_KEY (kept in .env, gitignored).
+llm:
+  model: "gpt-4o-mini"          # cheap + plenty for planning; gpt-4o for stronger reasoning

@@ -1,0 +1,25 @@
+# ---- secrets (NEVER commit) ----
+.env
+*.env
+!*.env.example        # keep the template, ignore real ones
+dayloop.env
+
+# ---- python virtual env ----
+.venv/
+venv/
+env/
+
+# ---- python caches / build ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ---- runtime state (personal data, regenerated) ----
+data/                 # events.jsonl, week_plan.json, chat.json — your logs
+
+# ---- os / editor cruft ----
+.DS_Store
+.idea/
+.vscode/

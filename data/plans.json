@@ -1,0 +1,92 @@
+{
+  "art": {
+    "id": "art",
+    "type": "skill",
+    "plan": null,
+    "log": [],
+    "error_log": [],
+    "updated": null
+  },
+  "reu_probe": {
+    "id": "reu_probe",
+    "type": "achievement",
+    "plan": {
+      "advanced_at": "2026-07-07T15:47:52",
+      "last_note": "Current leaf finished."
+    },
+    "log": [
+      {
+        "ts": "2026-07-07T15:41:15",
+        "kind": "reu_probe",
+        "payload": {
+          "ok": true
+        }
+      },
+      {
+        "ts": "2026-07-07T15:41:17",
+        "kind": "reu_probe",
+        "payload": {
+          "ok": true
+        }
+      },
+      {
+        "ts": "2026-07-07T15:45:31",
+        "kind": "reu_probe",
+        "payload": {
+          "ok": true
+        }
+      },
+      {
+        "ts": "2026-07-07T15:45:32",
+        "kind": "reu_probe",
+        "payload": {
+          "ok": true
+        }
+      }
+    ],
+    "error_log": [],
+    "updated": "2026-07-07T15:47:52"
+  },
+  "interview_prep": {
+    "id": "interview_prep",
+    "type": "skill",
+    "plan": null,
+    "log": [],
+    "error_log": [],
+    "updated": null
+  },
+  "bodycomp": {
+    "id": "bodycomp",
+    "type": "influence",
+    "plan": {
+      "last_note": "Bottleneck held."
+    },
+    "log": [
+      {
+        "ts": "2026-07-07T15:45:29",
+        "kind": "bodycomp",
+        "payload": {
+          "ok": true
+        }
+      }
+    ],
+    "error_log": [],
+    "updated": "2026-07-07T15:47:52"
+  },
+  "draw_daily": {
+    "id": "draw_daily",
+    "type": "habit",
+    "plan": null,
+    "log": [],
+    "error_log": [],
+    "updated": null
+  },
+  "reading": {
+    "id": "reading",
+    "type": "habit",
+    "plan": null,
+    "log": [],
+    "error_log": [],
+    "updated": null
+  }
+}

@@ -1,0 +1,80 @@
+# =====================================================================
+# DAYLOOP CONFIG  —  the three layers, as plain data you edit by hand.
+# Change anything here without touching code. This file IS the "model
+# of you" that rarely changes; the week plan (generated) is what bends.
+# =====================================================================
+
+# ---- LAYER 1: long-term goals (change rarely) -----------------------
+# outcome goals (a number you can't act on directly) carry `levers`:
+# the daily PROCESS behaviors the loop can actually nudge. The loop
+# tracks levers daily; it surfaces the outcome only as a weekly glance.
+long_term_goals:
+  - id: bodycomp
+    desc: "Body-composition goal by September"
+    type: outcome
+    levers: [workout_done, movement]
+    glance: weekly
+
+  - id: lab
+    desc: "Deception-probe transfer results scaled to 7B by end of REU"
+    type: project
+    levers: [deep_work_blocks]
+
+  - id: interview_prep
+    desc: "Be internship-ready for next summer — LeetCode, mock interviews, position research"
+    type: project
+    levers: [leetcode_done]
+
+  - id: art_freedom
+    desc: "Build toward financial freedom + art business foundations"
+    type: outcome
+    levers: [art_session]
+    glance: weekly                        # long arc — weekly check-in is enough
+
+# ---- LAYER 2: routine templates (the default days) -------------------
+# kinds: fixed (immovable), focus (deep cognitive work -> prime windows
+# only), transition (eat/shower/bike/walk — real time, not teleporting),
+# flex (blessed fun/recovery, protected on purpose),
+# conditional (happens most days but can be skipped — see `condition`).
+# `checkin: true` means a scheduled tap-to-log nudge fires at `start`.
+# `prime: true` marks your best cognitive windows for hard work.
+wake: "09:00"
+timezone: "America/New_York"
+
+weekday_routine:
+  - {start: "09:00", end: "09:30", kind: transition, name: "Wake, breakfast, get ready", checkin: true}
+  - {start: "09:30", end: "09:45", kind: transition, name: "Bike to gym"}
+  - {start: "09:45", end: "10:45", kind: fixed,      name: "Gym (1h cap)", lever: workout_done}
+  - {start: "10:45", end: "11:00", kind: transition, name: "Bike to library", checkin: true}
+  - {start: "11:00", end: "12:00", kind: focus,      name: "Deep work block A", prime: true, lever: deep_work_blocks}
+  - {start: "12:00", end: "13:00", kind: focus,      name: "LeetCode / interview prep", lever: leetcode_done, checkin: true}
+  - {start: "13:00", end: "13:30", kind: transition, name: "Lunch"}
+  - {start: "13:30", end: "16:45", kind: focus,      name: "Deep work block B", prime: true, lever: deep_work_blocks, checkin: true}
+  - {start: "16:45", end: "17:00", kind: transition, name: "Head to volleyball"}
+  # Volleyball is conditional: skip if rain or big deadline within 2 days.
+  # On skip days, this block becomes flex + optional extra deep work.
+  - {start: "17:00", end: "21:00", kind: conditional, name: "Volleyball", lever: movement, checkin: true,
+     condition: "no rain AND no major deadline within 2 days",
+     fallback: "flex"}
+  - {start: "21:00", end: "21:45", kind: transition, name: "Dinner + shower"}
+  - {start: "21:45", end: "23:59", kind: flex,       name: "Fun / recovery (optional light tasks only)", checkin: true}
+
+weekend_routine:
+  - {start: "10:00", end: "10:30", kind: transition, name: "Wake, breakfast, get ready", checkin: true}
+  - {start: "10:30", end: "10:45", kind: transition, name: "Bike to gym"}
+  - {start: "10:45", end: "11:45", kind: fixed,      name: "Gym (1h cap)", lever: workout_done}
+  - {start: "11:45", end: "12:00", kind: transition, name: "Bike back"}
+  - {start: "12:00", end: "13:00", kind: focus,      name: "LeetCode / interview prep", lever: leetcode_done, checkin: true}
+  - {start: "13:00", end: "13:30", kind: transition, name: "Lunch"}
+  - {start: "13:30", end: "15:30", kind: focus,      name: "Deep work (lighter)", lever: deep_work_blocks}
+  - {start: "15:30", end: "18:00", kind: fixed,      name: "Art time", lever: art_session, checkin: true}
+  - {start: "18:00", end: "23:59", kind: flex,       name: "Social / free time / recovery", checkin: true}
+
+# ---- LAYER 3 is generated, not configured ---------------------------
+# Monday: you send weekly goals + events -> the planner distributes them
+# into a day-by-day task list and packs tasks into the focus blocks above.
+
+llm:
+  # LiteLLM proxy is OpenAI-compatible. Set these via env (see README).
+  model: "gpt-4o"            # or whatever your proxy routes; e.g. claude-sonnet-4-6
+  # base_url + api_key come from env OPENAI_BASE_URL / OPENAI_API_KEY

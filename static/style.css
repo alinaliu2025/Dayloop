@@ -1,0 +1,150 @@
+/* =====================================================================
+   dayloop — a black & white editorial interface.
+   Style notes (after henry.codes): serif display type, monospace labels,
+   hairline rules, lots of air, uppercase micro-labels, a printed-zine feel.
+   The ONLY color in the whole app encodes goal type. Everything else is ink.
+   ===================================================================== */
+
+:root{
+  --paper:#faf9f7; --ink:#131210; --ink-soft:#3a3733;
+  --muted:#8f8a80; --faint:#e4e0d8; --line:#cfc9bd;
+  --serif:'Newsreader', Georgia, 'Times New Roman', serif;
+  --mono:'Space Mono', ui-monospace, Menlo, monospace;
+  /* goal-type accents — the only color */
+  --c-skill:#6d4bd0; --c-achievement:#1f63c8; --c-influence:#c07a16; --c-habit:#1f8a5b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:var(--serif);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+
+/* ---- layout ------------------------------------------------------- */
+.app{max-width:680px;margin:0 auto;
+  padding:calc(18px + env(safe-area-inset-top)) 20px calc(96px + env(safe-area-inset-bottom))}
+.tab-view{display:none} .tab-view.on{display:block}
+
+/* ---- masthead ----------------------------------------------------- */
+.masthead{display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:6px}
+.masthead .brand{font-size:30px;font-style:italic;font-weight:500;letter-spacing:-.5px}
+.masthead .brand .star{font-style:normal;font-size:18px;vertical-align:middle;margin-right:4px}
+.masthead .meta{font-family:var(--mono);font-size:11px;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--muted);text-align:right}
+
+/* ---- section labels + rules --------------------------------------- */
+.label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.18em;
+  color:var(--muted);margin:26px 0 10px;display:flex;align-items:center;gap:10px}
+.label::after{content:"";flex:1;height:1px;background:var(--line)}
+.hr{height:1px;background:var(--line);border:none;margin:14px 0}
+
+/* ---- generic controls (hover = invert, very henry) ---------------- */
+button,.btn{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;
+  background:var(--paper);color:var(--ink);border:1px solid var(--ink);border-radius:0;
+  padding:8px 12px;cursor:pointer;transition:.12s}
+button:hover,.btn:hover{background:var(--ink);color:var(--paper)}
+button:disabled{opacity:.4;cursor:default;background:var(--paper);color:var(--ink)}
+button.ghost{border-color:var(--line);color:var(--muted)}
+button.ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,textarea,select{font-family:var(--serif);font-size:16px;color:var(--ink);
+  background:transparent;border:none;border-bottom:1px solid var(--line);border-radius:0;
+  padding:6px 2px;width:100%}
+input:focus,textarea:focus,select:focus{outline:none;border-bottom-color:var(--ink)}
+textarea{min-height:92px;resize:vertical;border:1px solid var(--line);padding:10px}
+label.fld{display:block;margin:10px 0}
+label.fld span{font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--muted);display:block;margin-bottom:2px}
+
+/* ---- day schedule ------------------------------------------------- */
+.daynav{display:flex;justify-content:space-between;align-items:center;margin:4px 0 2px}
+.daynav .d{font-size:20px;font-style:italic}
+.daynav button{border-color:var(--line)}
+.sched{border-top:1px solid var(--line)}
+.blk{display:flex;gap:14px;align-items:flex-start;padding:11px 2px;border-bottom:1px solid var(--faint)}
+.blk .t{font-family:var(--mono);font-size:12px;color:var(--muted);min-width:104px;padding-top:3px;
+  font-variant-numeric:tabular-nums;cursor:pointer}
+.blk .b{flex:1;min-width:0}
+.blk .nm{font-size:17px}
+.blk.event .nm{font-style:italic}
+.blk .k{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--muted);margin-left:8px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;margin-right:6px}
+.dot.skill{background:var(--c-skill)} .dot.achievement{background:var(--c-achievement)}
+.dot.influence{background:var(--c-influence)} .dot.habit{background:var(--c-habit)}
+.tasks{margin:6px 0 0;padding-left:16px;color:var(--ink-soft);font-size:15px}
+.ci{display:flex;gap:6px;margin-top:7px}
+.ci button{padding:3px 10px;font-size:11px}
+.ci .on{background:var(--ink);color:var(--paper)}
+
+/* ---- buddy / streak ---------------------------------------------- */
+.buddy{display:flex;gap:18px;align-items:center;border:1px solid var(--line);padding:16px}
+.buddy pre{font-family:var(--mono);font-size:13px;line-height:1.15;margin:0;white-space:pre}
+.buddy .streak{text-align:center}
+.buddy .streak .n{font-size:44px;font-style:italic;line-height:1}
+.buddy .streak .u{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted)}
+.buddy .note{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px}
+
+/* ---- goal tree ---------------------------------------------------- */
+.gnode{border-bottom:1px solid var(--faint);padding:12px 2px}
+.gnode .gh{display:flex;align-items:baseline;gap:8px;cursor:pointer}
+.gnode .disc{font-family:var(--mono);color:var(--muted);width:14px}
+.gnode .gid{font-size:19px;font-style:italic}
+.gnode .type{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.gnode .pri{font-family:var(--mono);font-size:10px;border:1px solid var(--line);padding:1px 6px;margin-left:auto;text-transform:uppercase;letter-spacing:.1em}
+.pri.p1{border-color:var(--ink);color:var(--ink)} .pri.p3{color:var(--muted)}
+.gbody{margin:8px 0 2px 22px}
+.gbody .why{color:var(--ink-soft);font-size:15px}
+.sub{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dotted var(--faint)}
+.sub .box{font-family:var(--mono);cursor:pointer}
+.sub.done .txt{text-decoration:line-through;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+  border:1px solid var(--line);padding:2px 7px}
+.na{margin-top:8px} .na .l{font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--muted);display:block}
+
+/* ---- calendar / agenda ------------------------------------------- */
+.strip{display:flex;gap:6px;overflow-x:auto;padding:6px 0;border-bottom:1px solid var(--line)}
+.strip .day{flex:0 0 auto;text-align:center;padding:7px 10px;border:1px solid var(--faint);cursor:pointer;min-width:52px}
+.strip .day.sel{background:var(--ink);color:var(--paper)}
+.strip .day .wd{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.strip .day .dd{font-size:18px;font-style:italic}
+.strip .day .pip{width:4px;height:4px;border-radius:50%;background:currentColor;margin:3px auto 0;opacity:.5}
+.agenda .ev{display:flex;gap:12px;padding:10px 2px;border-bottom:1px solid var(--faint)}
+.agenda .ev .when{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:120px}
+.agenda .ev .x{margin-left:auto;color:var(--muted);cursor:pointer;font-family:var(--mono)}
+
+/* ---- journal ------------------------------------------------------ */
+.jentry{border-bottom:1px solid var(--faint);padding:14px 0}
+.jentry .jm{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);display:flex;gap:10px}
+.jentry .jt{margin-top:6px;white-space:pre-wrap}
+.kind{border:1px solid var(--line);padding:0 5px}
+
+/* ---- panels / modal ---------------------------------------------- */
+.panel{border:1px solid var(--ink);padding:16px;margin:12px 0}
+.panel h3{font-style:italic;font-weight:500;margin:0 0 8px;font-size:20px}
+.hide{display:none}
+.q{color:var(--ink-soft);font-size:15px;margin:8px 0}
+.toggle button.on{background:var(--ink);color:var(--paper)}
+
+/* ---- bottom tab bar (instagram-ish, monochrome) ------------------- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:var(--paper);
+  border-top:2px solid var(--ink);display:flex;
+  padding-bottom:env(safe-area-inset-bottom)}
+.tabbar button{flex:1;border:none;background:none;padding:12px 4px;color:var(--muted);
+  display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabbar button:hover{background:none;color:var(--ink)}
+.tabbar button .ic{font-size:16px;line-height:1}
+.tabbar button .tl{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.tabbar button.on{color:var(--ink)}
+.tabbar button.on .tl{border-bottom:1px solid var(--ink)}
+
+/* ---- misc --------------------------------------------------------- */
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);
+  background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;
+  padding:8px 14px;opacity:0;transition:.2s;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+.empty{color:var(--muted);font-style:italic;padding:14px 0}
+.spin{display:inline-block;width:11px;height:11px;border:2px solid var(--line);
+  border-top-color:var(--ink);border-radius:50%;animation:s .7s linear infinite;vertical-align:-1px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}

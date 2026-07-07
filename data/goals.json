@@ -1,0 +1,86 @@
+[
+  {
+    "id": "art",
+    "type": "skill",
+    "why": "make manga someday",
+    "priority": 2,
+    "levers": [
+      "construction",
+      "gesture",
+      "anatomy",
+      "perspective",
+      "value",
+      "color",
+      "composition",
+      "edges"
+    ],
+    "subgoals": [],
+    "domain": "drawing \u2014 anatomy from imagination",
+    "end_state": null,
+    "due": null
+  },
+  {
+    "id": "reu_probe",
+    "type": "achievement",
+    "why": "REU deliverable \u2014 the thing I'm actually here to ship",
+    "priority": 2,
+    "levers": [],
+    "subgoals": [],
+    "domain": null,
+    "end_state": "deception-probe transfer results scaled to 7B, written up",
+    "due": "2026-08-15"
+  },
+  {
+    "id": "interview_prep",
+    "type": "skill",
+    "why": "be internship-ready next summer",
+    "priority": 2,
+    "levers": [
+      "arrays",
+      "hashing",
+      "two_pointers",
+      "sliding_window",
+      "stacks",
+      "trees",
+      "graphs",
+      "dp"
+    ],
+    "subgoals": [],
+    "domain": "coding interviews \u2014 LeetCode patterns",
+    "end_state": null,
+    "due": null
+  },
+  {
+    "id": "bodycomp",
+    "type": "influence",
+    "why": "feel strong and healthy by end of summer",
+    "priority": 2,
+    "levers": [],
+    "subgoals": [],
+    "domain": null,
+    "end_state": null,
+    "due": null
+  },
+  {
+    "id": "draw_daily",
+    "type": "habit",
+    "why": "keep the drawing hand warm",
+    "priority": 2,
+    "levers": [],
+    "subgoals": [],
+    "domain": null,
+    "end_state": null,
+    "due": null
+  },
+  {
+    "id": "reading",
+    "type": "habit",
+    "why": "financial literacy + staying curious",
+    "priority": 2,
+    "levers": [],
+    "subgoals": [],
+    "domain": null,
+    "end_state": null,
+    "due": null
+  }
+]
