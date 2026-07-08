@@ -11,7 +11,7 @@
     "id": "reu_probe",
     "type": "achievement",
     "plan": {
-      "advanced_at": "2026-07-07T15:47:52",
+      "advanced_at": "2026-07-08T14:04:04",
       "last_note": "Current leaf finished."
     },
     "log": [
@@ -51,10 +51,19 @@
           "block": "t0",
           "date": "2026-07-08"
         }
+      },
+      {
+        "ts": "2026-07-08T14:04:29",
+        "kind": "reu_probe",
+        "payload": {
+          "ok": true,
+          "block": "t4",
+          "date": "2026-07-08"
+        }
       }
     ],
     "error_log": [],
-    "updated": "2026-07-07T15:47:52"
+    "updated": "2026-07-08T14:04:04"
   },
   "interview_prep": {
     "id": "interview_prep",
@@ -77,10 +86,28 @@
         "payload": {
           "ok": true
         }
+      },
+      {
+        "ts": "2026-07-08T14:01:04",
+        "kind": "bodycomp",
+        "payload": {
+          "ok": true,
+          "block": "t2",
+          "date": "2026-07-08"
+        }
+      },
+      {
+        "ts": "2026-07-08T14:04:24",
+        "kind": "bodycomp",
+        "payload": {
+          "ok": false,
+          "block": "t2",
+          "date": "2026-07-08"
+        }
       }
     ],
     "error_log": [],
-    "updated": "2026-07-07T15:47:52"
+    "updated": "2026-07-08T14:04:04"
   },
   "draw_daily": {
     "id": "draw_daily",

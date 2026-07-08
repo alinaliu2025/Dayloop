@@ -23,6 +23,6 @@ fi
 
 echo
 echo "Done. Next:"
-echo "  1. Edit .env and add your TELEGRAM_TOKEN and OPENAI_API_KEY"
+echo "  1. Edit .env and add your OPENAI_API_KEY"
 echo "  2. source .venv/bin/activate"
-echo "  3. python bot.py"
+echo "  3. python app.py    →  http://localhost:8000"

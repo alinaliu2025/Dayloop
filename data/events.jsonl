@@ -9,3 +9,7 @@
 {"ts": "2026-07-07T15:45:31", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true}}
 {"ts": "2026-07-07T15:45:32", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true}}
 {"ts": "2026-07-08T17:51:40", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true, "block": "t0", "date": "2026-07-08"}}
+{"ts": "2026-07-08T14:01:01", "kind": "checkin", "goal": null, "payload": {"ok": true, "block": "t0", "date": "2026-07-08"}}
+{"ts": "2026-07-08T14:01:04", "kind": "bodycomp", "goal": "bodycomp", "payload": {"ok": true, "block": "t2", "date": "2026-07-08"}}
+{"ts": "2026-07-08T14:04:24", "kind": "bodycomp", "goal": "bodycomp", "payload": {"ok": false, "block": "t2", "date": "2026-07-08"}}
+{"ts": "2026-07-08T14:04:29", "kind": "reu_probe", "goal": "reu_probe", "payload": {"ok": true, "block": "t4", "date": "2026-07-08"}}

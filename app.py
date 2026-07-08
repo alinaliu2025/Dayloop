@@ -1,9 +1,7 @@
 """
 app.py — the dashboard server. A small Flask app over the planner.py brain.
 
-Faces:
-  - the 4-tab web app in static/ (Home, Calendar, Goals, Journal)
-  - bot.py is the old Telegram face (kept for reference)
+The face is the 4-tab web app in static/ (Home, Calendar, Goals, Journal).
 
 Reads are FREE and instant (no LLM). Only the three action endpoints spend an
 LLM call: /api/plan, /api/today, /api/evening.
