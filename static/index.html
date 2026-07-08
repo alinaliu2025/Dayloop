@@ -68,29 +68,8 @@
   <!-- ============ CALENDAR ============ -->
   <section class="tab-view" id="tab-cal">
     <div class="label">Calendar</div>
-    <div class="strip" id="cal-strip"></div>
-    <div class="label">On this day</div>
-    <div id="cal-day"></div>
-    <div class="label">Add event</div>
-    <div class="panel" id="event-form">
-      <label class="fld"><span>title</span><input id="ev-title" placeholder="Midterm · CS class · dentist"></label>
-      <div class="row">
-        <label class="fld" style="flex:1"><span>start</span><input id="ev-start" value="09:00"></label>
-        <label class="fld" style="flex:1"><span>end</span><input id="ev-end" value="10:00"></label>
-      </div>
-      <label class="fld"><span>when</span>
-        <select id="ev-kind">
-          <option value="once">one-time (pick a date)</option>
-          <option value="weekly">repeats weekly</option>
-        </select>
-      </label>
-      <label class="fld" id="ev-date-wrap"><span>date</span><input id="ev-date" type="date"></label>
-      <div id="ev-days-wrap" class="hide">
-        <span class="label" style="margin:6px 0">repeats on</span>
-        <div class="row" id="ev-days"></div>
-      </div>
-      <div class="row" style="margin-top:10px"><button id="ev-save">✶ add event</button></div>
-    </div>
+    <div id="calendar"></div>
+    <p class="q" style="margin-top:10px">Tap any day to open it — see the schedule and add events.</p>
   </section>
 
   <!-- ============ GOALS ============ -->
@@ -112,6 +91,37 @@
 
 </div>
 
+<!-- ============ DAY DRAWER (slides in on date tap) ============ -->
+<div class="drawer-scrim" id="drawer-scrim"></div>
+<aside class="drawer" id="day-drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="d" id="drawer-date">—</div>
+    <button class="ghost" id="drawer-close" aria-label="close">✕</button>
+  </div>
+  <div class="label">Schedule</div>
+  <div id="drawer-sched"></div>
+  <div class="label">Add event</div>
+  <div class="panel" id="event-form">
+    <label class="fld"><span>title</span><input id="ev-title" placeholder="Midterm · CS class · dentist"></label>
+    <div class="row">
+      <label class="fld" style="flex:1"><span>start</span><input id="ev-start" value="09:00"></label>
+      <label class="fld" style="flex:1"><span>end</span><input id="ev-end" value="10:00"></label>
+    </div>
+    <label class="fld"><span>when</span>
+      <select id="ev-kind">
+        <option value="once">one-time (this day)</option>
+        <option value="weekly">repeats weekly</option>
+      </select>
+    </label>
+    <label class="fld" id="ev-date-wrap"><span>date</span><input id="ev-date" type="date"></label>
+    <div id="ev-days-wrap" class="hide">
+      <span class="label" style="margin:6px 0">repeats on</span>
+      <div class="row" id="ev-days"></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button id="ev-save">✶ add event</button></div>
+  </div>
+</aside>
+
 <!-- bottom tabs -->
 <nav class="tabbar" id="tabbar">
   <button data-tab="home" class="on"><span class="ic">◒</span><span class="tl">home</span></button>
@@ -122,6 +132,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>

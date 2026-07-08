@@ -103,16 +103,63 @@ label.fld span{font-family:var(--mono);font-size:10px;text-transform:uppercase;
 .na{margin-top:8px} .na .l{font-family:var(--mono);font-size:10px;text-transform:uppercase;
   letter-spacing:.14em;color:var(--muted);display:block}
 
-/* ---- calendar / agenda ------------------------------------------- */
-.strip{display:flex;gap:6px;overflow-x:auto;padding:6px 0;border-bottom:1px solid var(--line)}
-.strip .day{flex:0 0 auto;text-align:center;padding:7px 10px;border:1px solid var(--faint);cursor:pointer;min-width:52px}
-.strip .day.sel{background:var(--ink);color:var(--paper)}
-.strip .day .wd{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em}
-.strip .day .dd{font-size:18px;font-style:italic}
-.strip .day .pip{width:4px;height:4px;border-radius:50%;background:currentColor;margin:3px auto 0;opacity:.5}
-.agenda .ev{display:flex;gap:12px;padding:10px 2px;border-bottom:1px solid var(--faint)}
-.agenda .ev .when{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:120px}
-.agenda .ev .x{margin-left:auto;color:var(--muted);cursor:pointer;font-family:var(--mono)}
+/* ---- calendar (FullCalendar, re-skinned to ink & paper) ---------- */
+#calendar{
+  --fc-border-color:var(--line);
+  --fc-page-bg-color:var(--paper);
+  --fc-neutral-bg-color:var(--paper);
+  --fc-today-bg-color:#f0ede6;
+  --fc-event-bg-color:var(--ink);
+  --fc-event-border-color:var(--ink);
+  --fc-event-text-color:var(--paper);
+  --fc-button-bg-color:var(--paper);
+  --fc-button-text-color:var(--ink);
+  --fc-button-border-color:var(--ink);
+  --fc-button-hover-bg-color:var(--ink);
+  --fc-button-hover-border-color:var(--ink);
+  --fc-button-active-bg-color:var(--ink);
+  --fc-button-active-border-color:var(--ink);
+  font-family:var(--serif);margin-top:6px;
+}
+.fc .fc-toolbar.fc-header-toolbar{margin-bottom:12px}
+.fc .fc-toolbar-title{font-family:var(--serif);font-style:italic;font-weight:500;font-size:22px}
+.fc .fc-button{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+  border-radius:0;box-shadow:none!important;padding:5px 9px}
+.fc .fc-button:focus{box-shadow:none!important}
+.fc .fc-button-primary:disabled{opacity:.35}
+.fc .fc-col-header-cell-cushion{font-family:var(--mono);font-size:9px;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--muted);text-decoration:none;padding:6px 4px}
+.fc .fc-daygrid-day-number{font-family:var(--mono);font-size:12px;color:var(--ink);
+  text-decoration:none;padding:5px 6px}
+.fc .fc-day-other .fc-daygrid-day-number{color:var(--muted);opacity:.6}
+.fc .fc-daygrid-day{cursor:pointer;transition:background .1s}
+.fc .fc-daygrid-day:hover{background:#f3f0ea}
+.fc .fc-daygrid-day.fc-day-today{background:var(--fc-today-bg-color)}
+.fc .fc-daygrid-event{border-radius:0;font-family:var(--mono);font-size:10px;letter-spacing:.02em;
+  padding:1px 3px;white-space:normal}
+.fc .fc-daygrid-event .fc-event-time{font-weight:700;margin-right:3px}
+.fc .fc-daygrid-more-link{font-family:var(--mono);font-size:9px;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted)}
+.fc-theme-standard td,.fc-theme-standard th,.fc-theme-standard .fc-scrollgrid{border-color:var(--line)}
+
+/* ---- day drawer (slide-in / bottom sheet) ------------------------ */
+.drawer-scrim{position:fixed;inset:0;background:rgba(19,18,16,.35);opacity:0;
+  pointer-events:none;transition:opacity .2s;z-index:30}
+.drawer-scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(430px,90vw);background:var(--paper);
+  border-left:2px solid var(--ink);transform:translateX(100%);transition:transform .22s ease;
+  z-index:31;overflow-y:auto;
+  padding:calc(16px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom))}
+.drawer.open{transform:translateX(0)}
+.drawer-head{display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:2px solid var(--ink);padding-bottom:8px}
+.drawer-head .d{font-size:22px;font-style:italic}
+.drawer-head button{padding:4px 9px}
+@media (max-width:560px){
+  .drawer{top:auto;bottom:0;left:0;right:0;width:auto;height:82vh;
+    border-left:none;border-top:2px solid var(--ink);transform:translateY(100%)}
+  .drawer.open{transform:translateY(0)}
+}
 
 /* ---- journal ------------------------------------------------------ */
 .jentry{border-bottom:1px solid var(--faint);padding:14px 0}

@@ -42,6 +42,15 @@
         "payload": {
           "ok": true
         }
+      },
+      {
+        "ts": "2026-07-08T17:51:40",
+        "kind": "reu_probe",
+        "payload": {
+          "ok": true,
+          "block": "t0",
+          "date": "2026-07-08"
+        }
       }
     ],
     "error_log": [],

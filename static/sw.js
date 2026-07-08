@@ -2,7 +2,7 @@
 // works offline. NEVER caches /api/ — that data must always be live.
 // (Service workers only run over https or on localhost; over a plain-http
 //  LAN address the app still works, it just won't cache offline.)
-const CACHE = "dayloop-v1";
+const CACHE = "dayloop-v2";
 const SHELL = [
   "/", "/index.html", "/manifest.webmanifest",
   "/icon-192.png", "/icon-512.png", "/icon-180.png",

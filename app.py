@@ -30,6 +30,7 @@ GOALS_F   = p.DATA / "goals.json"
 EVENTS_F  = p.DATA / "events.json"
 OVER_F    = p.DATA / "overrides.json"
 JOURNAL_F = p.DATA / "journal.json"
+CHECK_F   = p.DATA / "checkins.json"   # per-date, per-block done/skip + daily mood
 
 
 # ------------------------------------------------------------ tiny json store
@@ -41,6 +42,14 @@ def _save(path, obj):
 
 def _uid():
     return uuid.uuid4().hex[:8]
+
+
+# ------------------------------------------------------------ check-in store
+def _day_checks(date_str):
+    """The saved button state for one date: {'blocks': {id: 'done'|'skip'},
+    'mood': 'good'|'rough'|None}. This is what makes the home buttons survive
+    a refresh — the tap is written here and read back into /api/day."""
+    return _load(CHECK_F, {}).get(date_str, {"blocks": {}, "mood": None})
 
 
 # ------------------------------------------------------------ goal tree store
@@ -155,7 +164,14 @@ def state():
 def day():
     date_str = request.args.get("date", dt.date.today().isoformat())
     d, blocks = merged_day(date_str)
-    return jsonify({"date": date_str, "weekday": d.strftime("%A"), "blocks": blocks})
+    dc = _day_checks(date_str)
+    bstat = dc.get("blocks", {})
+    for b in blocks:
+        st = bstat.get(b.get("id"))
+        if st:
+            b["status"] = st                      # 'done' | 'skip' → restores the button
+    return jsonify({"date": date_str, "weekday": d.strftime("%A"),
+                    "blocks": blocks, "mood": dc.get("mood")})
 
 @app.post("/api/day")
 def save_day():
@@ -223,10 +239,41 @@ def add_journal():
 # ---- free tap -----------------------------------------------------------
 @app.post("/api/checkin")
 def checkin():
+    """Tap a block's done/skip. Persists the choice per date+block so the button
+    stays lit after a refresh, and still appends to the event log for the streak.
+    status: 'done' | 'skip' | null (null clears the tap)."""
     d = request.get_json(force=True)
+    date_str = d.get("date") or dt.date.today().isoformat()
+    block = d.get("block")
+    status = d.get("status")
     goal = d.get("goal") or None
-    p.log_event(kind=goal or "checkin", payload={"ok": bool(d.get("ok"))}, goal=goal)
+
+    allc = _load(CHECK_F, {})
+    day = allc.setdefault(date_str, {"blocks": {}, "mood": None})
+    if block:
+        if status:
+            day["blocks"][block] = status
+        else:
+            day["blocks"].pop(block, None)        # tapping the lit button clears it
+    _save(CHECK_F, allc)
+
+    if status:                                     # only real taps feed the streak
+        p.log_event(kind=goal or "checkin",
+                    payload={"ok": status == "done", "block": block, "date": date_str},
+                    goal=goal)
     return jsonify(compute_progress())
+
+
+@app.post("/api/mood")
+def mood():
+    """Save the good/rough toggle for a date so it reloads correctly."""
+    d = request.get_json(force=True)
+    date_str = d.get("date") or dt.date.today().isoformat()
+    allc = _load(CHECK_F, {})
+    day = allc.setdefault(date_str, {"blocks": {}, "mood": None})
+    day["mood"] = d.get("mood")
+    _save(CHECK_F, allc)
+    return jsonify({"ok": True})
 
 
 # ============================================================= the LLM moments

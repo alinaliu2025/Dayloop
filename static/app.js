@@ -71,13 +71,14 @@ function renderSched(day, container, editable){
     const row=document.createElement("div");
     row.className="blk"+(b.event?" event":"");
     const tasks=SHAPED[b.name];
+    const doneOn=b.status==="done"?" on":"", skipOn=b.status==="skip"?" on":"";
     row.innerHTML=
       `<div class="t">${b.start}–${b.end}</div>
        <div class="b">
          <span class="nm">${dotFor(b.goal)}${esc(b.name)}</span>
          <span class="k">${b.event?"event":(b.kind||"")}</span>
          ${tasks&&tasks.length?`<ul class="tasks">${tasks.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`:""}
-         ${b.checkin?`<div class="ci"><button class="done">done</button><button class="skip">skip</button></div>`:""}
+         ${b.checkin?`<div class="ci"><button class="done${doneOn}">done</button><button class="skip${skipOn}">skip</button></div>`:""}
          ${b.event&&editable?`<button class="ghost del" style="margin-top:6px;padding:2px 8px">delete</button>`:""}
        </div>`;
     if(editable && !b.event){
@@ -86,19 +87,23 @@ function renderSched(day, container, editable){
     }
     const ci=row.querySelector(".ci");
     if(ci){
-      ci.querySelector(".done").onclick=e=>doCheckin(e.target,b.goal,1);
-      ci.querySelector(".skip").onclick=e=>doCheckin(e.target,b.goal,0);
+      ci.querySelector(".done").onclick=e=>doCheckin(e.target,day.date,b,"done");
+      ci.querySelector(".skip").onclick=e=>doCheckin(e.target,day.date,b,"skip");
     }
     const del=row.querySelector(".del");
     if(del) del.onclick=()=>delEvent(b.id);
     container.appendChild(row);
   });
 }
-async function doCheckin(btn,goal,ok){
+async function doCheckin(btn,dateStr,block,status){
+  const already=btn.classList.contains("on");
+  const next=already?null:status;                 // tapping a lit button clears it
   btn.parentElement.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
-  btn.classList.add("on");
-  const prog=await api.post("/api/checkin",{goal:goal||null,ok:!!ok});
-  renderBuddy(prog); toast("logged");
+  if(next) btn.classList.add("on");
+  block.status=next;                              // keep local copy in sync for re-renders
+  const prog=await api.post("/api/checkin",
+    {date:dateStr,block:block.id,goal:block.goal||null,status:next});
+  renderBuddy(prog); toast(next?"logged":"cleared");
 }
 
 /* ---------------- HOME ---------------- */
@@ -108,8 +113,19 @@ async function loadHome(){
     homeDate.toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"});
   HOMEDAY=await api.get("/api/day?date="+toISO(homeDate));
   renderSched(HOMEDAY,$("#home-sched"),true);
+  applyMood(HOMEDAY.mood);                         // restore good/rough from server
 }
 function isToday(d){return toISO(d)===toISO(new Date());}
+/* reflect a saved mood in the toggle without re-saving it */
+function applyMood(mood){
+  DRAINED = mood==="rough" ? 1 : 0;
+  $("#daily-good").classList.toggle("on", mood!=="rough");
+  $("#daily-rough").classList.toggle("on", mood==="rough");
+}
+async function setMood(mood){
+  applyMood(mood);
+  await api.post("/api/mood",{date:toISO(homeDate),mood});
+}
 $("#home-prev").onclick=()=>{homeDate.setDate(homeDate.getDate()-1);SHAPED={};loadHome();};
 $("#home-next").onclick=()=>{homeDate.setDate(homeDate.getDate()+1);SHAPED={};loadHome();};
 
@@ -140,8 +156,8 @@ async function saveHomeDay(){
 }
 
 /* daily journal → evening reveal (writes back + journals) */
-$("#daily-good").onclick=()=>{DRAINED=0;$("#daily-good").classList.add("on");$("#daily-rough").classList.remove("on");};
-$("#daily-rough").onclick=()=>{DRAINED=1;$("#daily-rough").classList.add("on");$("#daily-good").classList.remove("on");};
+$("#daily-good").onclick=()=>setMood("good");
+$("#daily-rough").onclick=()=>setMood("rough");
 $("#daily-save").onclick=async e=>{
   const note=$("#daily-text").value.trim();
   if(!note){toast("write a line first");return;}
@@ -169,43 +185,73 @@ $("#weekly-save").onclick=async e=>{
   await loadState(); toast("week re-derived");
 };
 
-/* ---------------- CALENDAR ---------------- */
-let EVENTS=[];
+/* ---------------- CALENDAR (FullCalendar month grid + day drawer) ------ */
+let EVENTS=[], CAL=null, drawerDate=null;
+const DOW={sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
+
+/* map our stored events → FullCalendar event objects */
+function fcEvents(){
+  return EVENTS.map(ev=>{
+    if(ev.recurrence && ev.recurrence.freq==="weekly"){
+      return {id:ev.id,title:ev.title,
+        daysOfWeek:(ev.recurrence.days||[]).map(x=>DOW[x.slice(0,3).toLowerCase()]),
+        startTime:ev.start,endTime:ev.end};
+    }
+    return {id:ev.id,title:ev.title,
+      start:`${ev.date}T${ev.start||"09:00"}`, end:`${ev.date}T${ev.end||"10:00"}`};
+  });
+}
+function refreshCalEvents(){
+  if(!CAL) return;
+  CAL.removeAllEvents();
+  fcEvents().forEach(e=>CAL.addEvent(e));
+}
+function initCalendar(){
+  CAL=new FullCalendar.Calendar($("#calendar"),{
+    initialView:"dayGridMonth",
+    height:"auto",
+    firstDay:1,                                   // Monday-first
+    fixedWeekCount:false,
+    dayMaxEvents:3,
+    headerToolbar:{left:"prev,next",center:"title",right:"today"},
+    events:fcEvents(),
+    dateClick:info=>openDrawer(info.dateStr),
+    eventClick:info=>{info.jsEvent.preventDefault();openDrawer(info.event.startStr.slice(0,10));},
+  });
+  CAL.render();
+}
 async function loadCal(){
   EVENTS=await api.get("/api/events");
-  renderStrip();
-  renderCalDay();
+  if(!CAL) initCalendar(); else { refreshCalEvents(); CAL.updateSize(); }
   buildDayPickers();
 }
-function eventOn(ev,d){
-  const iso=toISO(d);
-  if(ev.date) return ev.date===iso;
-  if(ev.recurrence&&ev.recurrence.freq==="weekly"){
-    const wd=["sun","mon","tue","wed","thu","fri","sat"][d.getDay()];
-    return (ev.recurrence.days||[]).map(x=>x.slice(0,3).toLowerCase()).includes(wd);
-  }
-  return false;
+
+/* ---- day drawer ---- */
+function openDrawer(dateStr){
+  drawerDate=dateStr;
+  const d=fromISO(dateStr);
+  $("#drawer-date").textContent=d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+  $("#ev-date").value=dateStr;
+  $("#ev-kind").value="once";
+  $("#ev-days-wrap").classList.add("hide");
+  $("#ev-date-wrap").classList.remove("hide");
+  $("#drawer-scrim").classList.add("open");
+  $("#day-drawer").classList.add("open");
+  $("#day-drawer").setAttribute("aria-hidden","false");
+  renderDrawerSched();
 }
-function renderStrip(){
-  const el=$("#cal-strip"); el.innerHTML="";
-  const base=new Date(); base.setHours(0,0,0,0);
-  for(let i=0;i<21;i++){
-    const d=new Date(base); d.setDate(base.getDate()+i);
-    const has=EVENTS.some(ev=>eventOn(ev,d));
-    const div=document.createElement("div");
-    div.className="day"+(toISO(d)===toISO(calDate)?" sel":"");
-    div.innerHTML=`<div class="wd">${d.toLocaleDateString("en-US",{weekday:"short"})}</div>
-      <div class="dd">${d.getDate()}</div>${has?'<div class="pip"></div>':""}`;
-    div.onclick=()=>{calDate=d;renderStrip();renderCalDay();};
-    el.appendChild(div);
-  }
+async function renderDrawerSched(){
+  const day=await api.get("/api/day?date="+drawerDate);
+  renderSched(day,$("#drawer-sched"),true);
 }
-async function renderCalDay(){
-  const day=await api.get("/api/day?date="+toISO(calDate));
-  $$("#tab-cal .label")[1].textContent =
-    calDate.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-  renderSched(day,$("#cal-day"),true);
+function closeDrawer(){
+  $("#drawer-scrim").classList.remove("open");
+  $("#day-drawer").classList.remove("open");
+  $("#day-drawer").setAttribute("aria-hidden","true");
 }
+$("#drawer-scrim").onclick=closeDrawer;
+$("#drawer-close").onclick=closeDrawer;
+
 function buildDayPickers(){
   const wrap=$("#ev-days");
   if(wrap.childElementCount) return;
@@ -213,7 +259,6 @@ function buildDayPickers(){
     const b=document.createElement("button"); b.className="ghost"; b.textContent=d; b.dataset.d=d.toLowerCase();
     b.onclick=()=>b.classList.toggle("on"); wrap.appendChild(b);
   });
-  $("#ev-date").value=toISO(calDate);
 }
 $("#ev-kind").onchange=e=>{
   const weekly=e.target.value==="weekly";
@@ -227,15 +272,21 @@ $("#ev-save").onclick=async()=>{
     const days=$$("#ev-days button.on").map(b=>b.dataset.d);
     if(!days.length){toast("pick a day");return;}
     body.recurrence={freq:"weekly",days};
-  }else{ body.date=$("#ev-date").value||toISO(calDate); }
+  }else{ body.date=$("#ev-date").value||drawerDate; }
   await api.post("/api/events",body);
   $("#ev-title").value="";
-  toast("event added"); loadCal();
+  toast("event added");
+  EVENTS=await api.get("/api/events");
+  refreshCalEvents();
+  renderDrawerSched();
 };
 async function delEvent(id){
   if(!confirm("Delete this event?")) return;
   await api.post("/api/events/delete",{id}); toast("deleted");
-  if($("#tab-cal").classList.contains("on")) loadCal(); else loadHome();
+  EVENTS=await api.get("/api/events");
+  refreshCalEvents();
+  if($("#day-drawer").classList.contains("open")) renderDrawerSched();
+  if($("#tab-home").classList.contains("on")) loadHome();
 }
 
 /* ---------------- GOALS ---------------- */
